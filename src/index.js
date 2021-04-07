@@ -3,9 +3,9 @@ import './style.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
  
-const title = 'It works!';
+import App from './App.jsx'
  
 ReactDOM.render(
-  <div>{title}</div>,
+  <App/>,
   document.getElementById('app')
 );

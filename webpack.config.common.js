@@ -1,12 +1,15 @@
-const path = require('path')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.jsx',
+  resolve: {
+      extensions:[".js",".jsx",".ts",".tsx"]
+  },
   output: {
-    filename: '[name].[contenthash].js', // this line is the only difference
-    path: path.resolve(__dirname, 'dist')
+    filename: '[name].[contenthash].js', // split into chunks so we can detect changes
+    path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -25,7 +28,6 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
-    ]
-  }
-}
-
+    ],
+  },
+};

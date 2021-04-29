@@ -1,7 +1,6 @@
 import React from 'react';
 
-class Navbar extends React.Component {
-    render(){
+function Navbar() {
         return (
             <div class="text-lg items-center">
                 <div class="flex max-w-4xl mx-auto justify-between">
@@ -17,7 +16,6 @@ class Navbar extends React.Component {
                 </div>
             </div>
         )
-    }
 }
 
 export default Navbar

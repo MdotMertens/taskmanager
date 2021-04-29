@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.jsx',
   resolve: {
-      extensions:[".js",".jsx",".ts",".tsx"]
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   output: {
     filename: '[name].[contenthash].js', // split into chunks so we can detect changes

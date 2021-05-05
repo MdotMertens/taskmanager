@@ -1,5 +1,5 @@
 {
-  "name": "nindoshowcase",
+  "name": "taskmanager",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "export NODE_ENV=production;  webpack --config=webpack.config.prod.js",
     "build-dev": "webpack --config=webpack.config.dev.js",
-    "start": "webpack-dev-server --config=webpack.config.dev.js --mode development"
+    "start": "webpack-dev-server --config=webpack.config.dev.js --mode development",
+    "start-server": "node server/index.js",
+    "lint": "npx eslint 'src/**.js' 'src/**.jsx'"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +29,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "express": "^4.17.1",
     "html-minimizer-webpack-plugin": "^2.1.0",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.4.0",
@@ -44,6 +47,11 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "dotenv": "^8.5.1",
+    "express-promise-router": "^4.1.0",
+    "jsonschema": "^1.4.0",
+    "node-fetch": "^2.6.1",
+    "pg": "^8.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "tailwindcss": "^1.0.4"

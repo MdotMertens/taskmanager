@@ -50,6 +50,7 @@
     "dotenv": "^8.5.1",
     "express-promise-router": "^4.1.0",
     "jsonschema": "^1.4.0",
+    "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.6.0",
     "react": "^17.0.2",

@@ -1,8 +1,8 @@
 import React from 'react'
 
-import Navbar from './components/Navbar.jsx'
-import Card from './components/Card.jsx'
-import Tasklist from './components/tasklist/Tasklist.jsx'
+import Navbar from './components/Navbar'
+import Card from './components/Card'
+import Tasklist from './components/tasklist/Tasklist'
 class App extends React.Component {
     render(){
         return (

@@ -22,5 +22,24 @@ const userSchema = {
         "required": ["username", "password", "firstName", "lastName"]
 }
 
-const verifyUserJSON = (jsonData) => validate(jsonData, userSchema, {allowUnknownAttributes: false})
-module.exports = verifyUserJSON 
+const loginSchema = {
+    "type": "object",
+    "properties": { 
+        "username": {
+            "type": "string"
+        },
+        "password": {
+            "type": "string"
+        }
+    },
+    "required": ["username", "password"]
+}
+
+const checkRegisterJSON = (jsonData) => validate(jsonData, userSchema, {allowUnknownAttributes: false})
+const checkLoginJSON = (jsonData) => validate(jsonData, loginSchema, {allowUnknownAttributes:false})
+
+
+module.exports = {
+    checkRegisterJSON,
+    checkLoginJSON
+}

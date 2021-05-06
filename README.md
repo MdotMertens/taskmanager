@@ -19,7 +19,7 @@ The backend is a [express](https://expressjs.com/) app. It provides a REST-API t
 
 ### Database
 The database schema is fairly simple for now but it will groow with added features.
-![datatbase schema](Untitled Diagram.png)
+![datatbase schema](https://github.com/MdotMertens/taskmanager/blob/main/Untitled%20Diagram.png)
 
 ## Installation
 

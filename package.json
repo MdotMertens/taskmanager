@@ -10,6 +10,7 @@
     "build-dev": "webpack --config=webpack.config.dev.js",
     "start": "webpack-dev-server --config=webpack.config.dev.js --mode development",
     "start-server": "node server/index.js",
+    "start-server-dev": "nodemon server/index.js",
     "lint": "npx eslint 'src/**.js' 'src/**.jsx'"
   },
   "keywords": [],

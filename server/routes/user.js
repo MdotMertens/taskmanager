@@ -10,9 +10,11 @@ const db = require('../database')
 const errorMessage = require('../utils/schemahelper')
 
 const {checkRegisterJSON, checkLoginJSON} = require('../utils/user')
+const { authRequest } = require('../utils/middleware')
 
-router.get('/get', async(req,res) => {
-    res.send('Hello from user')
+
+router.get('/secretroute', authRequest, async(req,res) => {
+    res.send('You are logged in')
 })
 
 // Route used to register a new user 

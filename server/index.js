@@ -32,24 +32,5 @@ app.get('/', (req,res) => {
     res.send({"name": "Test", "done": false})
 })
 
-function authRequest(req, res, next) {
-    const headerAuth = req.headers['authorization']
-    const token = headerAuth && headerAuth.split(' ')[1]
-
-    if(token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.JWT_TOKEN, (err, user) => {
-    
-        if(err){
-            console.log(err)
-            res.sendStatus(403)
-        }
-
-        req.user = user
-        next()
-    })
-
-
-}
-
 app.listen(port, () => console.log(`Listening on: ${port}`))
+

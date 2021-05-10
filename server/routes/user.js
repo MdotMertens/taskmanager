@@ -1,7 +1,6 @@
 const Router = require('express-promise-router')
 const router = new Router()
 
-require('dotenv').config()
 
 const jwt = require('jsonwebtoken')
 
@@ -22,10 +21,11 @@ router.post('/register', async (req, res) => {
     const data = req.body
     const validData = checkRegisterJSON(data) //validate data against the excepted schema
     if(validData.valid){ // Check if the JSON is valid
-        if (await registerUser(data)){  // If we have a rowCount bigger than one, then the user registered successully
+        const result = await registerUser(data) //
+        if (result){  
             //issue a token for the user to athenticate
             //tokens expoire after a day defined through expiresIn
-            const jwtToken = jwt.sign({username: data.username }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
+            const jwtToken = jwt.sign({username: data.username, userId: result.id }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
             res.json({message: 'Registered successfully', token: jwtToken})
         } else { // let the user know if we couldn't register him
             res.send(JSON.parse(`{"error": "Couldn't add user to database"}`))
@@ -40,9 +40,9 @@ router.post('/login', async(req, res) =>{
     const data = req.body
     const validData = checkLoginJSON(data)
     if(validData.valid){
-        console.log(validData)
-        if(await loginUser(data)){
-            const jwtToken = jwt.sign({username: data.username }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
+        const result = await loginUser(data)
+        if(result){
+            const jwtToken = jwt.sign({username: data.username, userId: result.id }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
             res.json({message: 'Success', token: jwtToken})
         }
         res.send("Wrong pasword")
@@ -51,30 +51,31 @@ router.post('/login', async(req, res) =>{
 
 async function registerUser(userData){ 
     // Insert the user data into the database
-    // if it throws an error, we return null
+    // if it throws an error, we return false
+    let result
     try{
-        await db.query(
+       result  = await db.query(
             `INSERT INTO \"User\"(username, password, email, firstname, lastname)
-             VALUES($1,$2,$3,$4,$5)`
+             VALUES($1,$2,$3,$4,$5) RETURNING id`
             ,[userData.username, userData.password, userData.email, userData.firstName, userData.lastName])
     } catch(e) {
         return false 
     }
 
-    return true
+    return result.rows[0]
 }
 
 async function loginUser(userData) {
     let result
     try {
         result = await db.query({
-            text: `SELECT username, password FROM \"User\" WHERE username = $1`,
+            text: `SELECT id, username, password FROM \"User\" WHERE username = $1`,
             values: [userData.username]})
     } catch(e){
-        return null
+        return false
     }
     if(result.rows[0].password === userData.password){
-        return true
+        return result.rows[0]
     }
     return false
 }

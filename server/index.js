@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const port = process.env.EXPRESS_PORT || 6060
 
 const userRouter = require('./routes/user')
+const teamRouter = require('./routes/teams')
 
 require('dotenv').config()
 
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/user', userRouter)
+app.use('/team', teamRouter)
 
 app.get('/', (req,res) => {
     res.send({"name": "Test", "done": false})

@@ -31,6 +31,16 @@ async function createTeam(teamName, teamManager){
         })
     } catch(e){
         console.log(e)
+router.post('/:teamname/adduser')
+
+
+async function createTeam(team){
+    try {
+        await db.query({
+            text: `INSERT INTO \"TeamDetails\"(teamname, teammanager) VALUES($1, $2)`,
+            values: [team.teamName, team.teamManager]
+        })
+    } catch(e){
         return false
     }
     return true

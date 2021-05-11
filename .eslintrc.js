@@ -25,5 +25,6 @@ module.exports = {
         }
     },
     "rules": {
+        "max-lines-per-function": ["error", 20]
     }
 };

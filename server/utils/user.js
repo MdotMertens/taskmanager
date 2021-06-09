@@ -39,7 +39,8 @@ const checkRegisterJSON = (jsonData) => validate(jsonData, userSchema, {allowUnk
 const checkLoginJSON = (jsonData) => validate(jsonData, loginSchema, {allowUnknownAttributes:false})
 
 
+
 module.exports = {
     checkRegisterJSON,
-    checkLoginJSON
+    checkLoginJSON,
 }

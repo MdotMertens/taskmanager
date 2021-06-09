@@ -22,6 +22,4 @@ const authRequest = (req, res, next) => {
 }
 
 
-module.exports = {
-    authRequest
-}
+module.exports = authRequest

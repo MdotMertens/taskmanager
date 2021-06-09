@@ -1,6 +1,7 @@
 const { Pool } = require('pg')
 
-require('dotenv').config()
+const env_file = (process.env.NODE_ENV === "test") ? "/.env/test" : "/.env/prod"  
+require('dotenv').config({path: process.cwd() + env_file})
 
 const pool = new Pool({ 
     host: process.env.PG_HOST,

@@ -2,35 +2,43 @@ const express = require('express')
 const app = express()
 const jwt = require('jsonwebtoken')
 
-const port = process.env.EXPRESS_PORT || 6060
+const db = require('./database/index')
+
+
 
 const userRouter = require('./routes/user')
 
-require('dotenv').config()
+const makeApp =  ({userRepository = null, teamRepository = null}) => {
+	
 
-// Use bodyparser in order to parse requests into JSON
-app.use(express.json({
-    verify: (req, res, buf, encoding) => {
-        try {
-            JSON.parse(buf)
-        } catch(e){
-            res.status(400).send('Invalid JSON')
-        }
-    },
-    type: "*/*"
-}))
+	if( process.env.NODE_ENV !== 'prod') {
+		// Set header for development purposes
+		app.use((_, res, next) => {
+		    res.header("Access-Control-Allow-Origin", "*");
+		    next()
+		})
+	}
 
-// Set header for development purposes
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    next()
-})
+	// Use bodyparser in order to parse requests into JSON
+	app.use(express.json({
+	    verify: (_, res, buf) => {
+		try {
+		    JSON.parse(buf)
+		} catch(e){
+		    res.status(400).send('Invalid JSON')
+		}
+	    },
+	    type: "*/*"
+	}))
 
-app.use('/user', userRouter)
+	//Setting up routes for the app to use
+	app.use('/user', userRouter(userRepository))
+	app.use('/team', teamRouter(teamRepository))
 
-app.get('/', (req,res) => {
-    res.send({"name": "Test", "done": false})
-})
+	return app
+}
 
-app.listen(port, () => console.log(`Listening on: ${port}`))
-
+module.exports = {
+	app,
+	makeApp
+}

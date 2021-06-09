@@ -84,5 +84,4 @@ module.exports = (userRepository, teamRepository) => {
 	})
 
 	return router
->>>>>>> 77207b2 (feat: added team functionality)
 }

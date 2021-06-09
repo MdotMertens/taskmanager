@@ -10,8 +10,7 @@
     "start": "webpack-dev-server --config=webpack.config.dev.js --mode development",
     "start-server": "node server/index.js",
     "start-server-dev": "nodemon server/index.js",
-    "lint": "npx eslint 'src/**.jsx' 'server/**.js'",
-    "doc": "jsdoc -d docs server/**/*.js -c jsdoc.json"
+    "lint": "npx eslint 'src/**.jsx' 'server/**.js'"
   },
   "keywords": [],
   "author": "",

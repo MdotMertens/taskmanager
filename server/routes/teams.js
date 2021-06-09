@@ -275,4 +275,3 @@ router.delete('/removeuser', authRequest, async(req, res) => {
 })
     return router
 }
-

@@ -17,6 +17,7 @@ const authRequest = (req, res, next) => {
         }
         // Set the user in the request
         req.username = data.username
+        req.userId = data.userId
         next()
     })
 }

@@ -1,12 +1,10 @@
 const express = require('express')
 const app = express()
-const jwt = require('jsonwebtoken')
 
 const db = require('./database/index')
 
-
-
 const userRouter = require('./routes/user')
+const teamRouter = require('./routes/teams')
 
 const makeApp =  ({userRepository = null, teamRepository = null}) => {
 	

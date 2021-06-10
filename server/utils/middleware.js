@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 // A function to authorize the requests in ordre to protect routes
 // It uses JWT for authorization 
-const authRequest = (req, res, next) => {
+function authRequest(req, res, next) {
     const headerAuth = req.headers['authorization']
     const token = headerAuth && headerAuth.split(' ')[1]
     

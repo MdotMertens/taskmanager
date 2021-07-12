@@ -5,8 +5,9 @@ const db = require('./database/index')
 
 const userRouter = require('./routes/user')
 const teamRouter = require('./routes/teams')
+const todoRouter = require('./routes/todo')
 
-const makeApp =  ({userRepository = null, teamRepository = null}) => {
+const makeApp =  ({userRepository = null, teamRepository = null, todoRepository = null}) => {
 	
 
 	if( process.env.NODE_ENV !== 'prod') {
@@ -32,6 +33,7 @@ const makeApp =  ({userRepository = null, teamRepository = null}) => {
 	//Setting up routes for the app to use
 	app.use('/user', userRouter(userRepository))
 	app.use('/team', teamRouter(teamRepository))
+	app.use('/todo', todoRouter(todoRepository, userRepository))
 
 	return app
 }

@@ -1,4 +1,7 @@
-const validate = require('jsonschema').validate
+const Ajv = require('ajv')
+const addFormats = require('ajv-formats')
+const ajv = new Ajv.default()
+addFormats(ajv)
 
 const userSchema = {
     "type": "object",
@@ -35,9 +38,9 @@ const loginSchema = {
     "required": ["username", "password"]
 }
 
-const checkRegisterJSON = (jsonData) => validate(jsonData, userSchema, {allowUnknownAttributes: false})
-const checkLoginJSON = (jsonData) => validate(jsonData, loginSchema, {allowUnknownAttributes:false})
 
+const checkRegisterJSON = ajv.compile(userSchema)
+const checkLoginJSON = ajv.compile(loginSchema)
 
 
 module.exports = {

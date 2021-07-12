@@ -8,12 +8,15 @@ const errorMessage = require('../utils/schemahelper')
 const {checkRegisterJSON, checkLoginJSON} = require('../utils/user')
 const authRequest = require('../utils/middleware')
 
+const env_file = (process.env.NODE_ENV !== "test") ? "/.env/dev" : "/.env/prod"  
+require('dotenv').config({path: process.cwd() + env_file})
+
 module.exports = (userRepository, teamRepository) => {
 	// Route used to register a new user 
 	router.post('/register', async (req, res) => { 
 	    const data = req.body
 	    const validData = checkRegisterJSON(data) //validate data against the excepted schema
-	    if(validData.valid){ // Check if the JSON is valid
+	    if(validData){ // Check if the JSON is valid
 		const result = await userRepository.registerUser(data) //
 		if (result){  
 		    //issue a token for the user to athenticate
@@ -21,10 +24,10 @@ module.exports = (userRepository, teamRepository) => {
 		    const jwtToken = jwt.sign({username: data.username, userId: result.id }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
 		    res.status(201).json({status: "Success", message: 'Registered successfully', token: jwtToken})
 		} else { // let the user know if we couldn't register him
-			res.status(500).json({status: "Error", error: "Couldn't add user to database"})
+		    res.status(500).json({status: "Error", error: "Couldn't add user to database"})
 		} 
 	    } else { //If not we let the user know what is wrong
-		res.status(400).json({})
+		res.status(400).json(checkRegisterJSON.errors)
 	    }
 	})
 
@@ -32,14 +35,14 @@ module.exports = (userRepository, teamRepository) => {
 	router.post('/login', async(req, res) =>{
 	    const data = req.body
 	    const validData = checkLoginJSON(data)
-	    if(validData.valid){
+	    if(validData){
 		const result = await userRepository.loginUser(data)
 		if(result){
 		    const jwtToken = jwt.sign({username: data.username, userId: result.id }, process.env.JWT_SECRET, {expiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24})
 		    res.status(200).json({status: 'Success', message: 'Logged in successfully', token: jwtToken})
 		}
 		res.status(401).json({status: 'Error', message: "Username or password is wrong"})
-	    } else res.status(401).json({status: 'Error', message: errorMessage(validData.errors)})
+	    } else res.status(401).json({status: 'Error', message: checkLoginJSON.errors})
 	})
 	    /**  @swagger
 	    * /user/invites:

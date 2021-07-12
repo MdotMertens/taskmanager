@@ -19,74 +19,132 @@ beforeAll(() =>{
 describe('Testing User Router', () =>{
 	describe('POST /user/register --> create new user', () => {
 		const route = '/user/register'
-		it('Registering with correct body should return a token', async () => {
-			mockUserRepository.registerUser.mockResolvedValue({id: 1})
-			const response = await request(app).post(route).send({
+		describe('Registering with valid body', () => {
+			const bodyData = [
+				{
 				username: "R.User",
 				password: "1234",
 				email: "it@aspecialemail.com",
 				firstName: "it",
 				lastName: "user"
+				}
+			]
+			for(const data of bodyData) {
+				it('Response should be in application/json', async() => {
+					const response = await request(app).post(route).send(data)
+					expect(response.type).toBe('application/json')
 				})
-			expect(response.type).toBe('application/json')
-			expect(response.statusCode).toBe(201)
-			expect(response.body.hasOwnProperty('token')).toBeTruthy()
+				it('Response should have statuscode 201', async() => {
+					mockUserRepository.registerUser.mockResolvedValue({id: 1})
+					const response = await request(app).post(route).send(data)
+					expect(response.statusCode).toBe(201)
+
+				})
+
+				it('Response should have a auth token', async() => {
+					const response = await request(app).post(route).send(data)
+					expect(response.body.hasOwnProperty('token')).toBeTruthy()
+				})
+			}
 
 		})
 
-		it('Sending an empty body should return StatusCode 400', async () => {
-			const response = await request(app).post(route).send({})
-			expect(response.type).toBe('application/json')
-			expect(response.statusCode).toBe(400)
-			expect(response.body.hasOwnProperty('token')).toBeFalsy()
+		describe('Sending an empty body should return StatusCode 400', () => {
+			const data = {}
+
+			it('Response should be in application/json', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+			it('Response should have statuscode 400', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.statusCode).toBe(400)
+			})
+			it('Response should not have a auth token', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.body.hasOwnProperty('token')).toBeFalsy()
+			})
 		})
 		
-		it('Registering with the same crdentials twice should return 500', async () => {
-
+		describe('Registering with the same crdentials twice should return 500', () => {
+			// registerUser returns false if a user already exists
+			it('Response should have statuscode 500', async() =>{
 			mockUserRepository.registerUser.mockResolvedValue(false)
-			const response = await request(app).post(route).send({
-				username: "R.User",
-				password: "1234",
-				email: "test@aspecialemail.com",
-				firstName: "test",
-				lastName: "user"
-				})
-			expect(response.statusCode).toBe(500)
+				const response = await request(app).post(route).send({
+					username: "R.User",
+					password: "1234",
+					email: "test@aspecialemail.com",
+					firstName: "test",
+					lastName: "user"
+					})
+				expect(response.statusCode).toBe(500)
+			})
 		})
 	})
 
 	describe('POST /user/login --> logging a user in', () => {
 		const route = '/user/login'
-		it('Logging in with valid credentials', async () => {
-			mockUserRepository.loginUser.mockReturnValueOnce({id: 1})
-			const response = await request(app).post(route).send({
+		describe('Logging in with valid credentials', () => {
+			//Assuming that the credentials are valid
+
+			beforeEach(() => {
+				mockUserRepository.loginUser.mockReturnValueOnce({id: 1})
+			})
+
+			const data = {
 				username: "testuser",
 				password: "1234"
+			}
+
+			it('response should be in application/json', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.type).toBe('application/json')
 			})
-			expect(response.status).toBe(200)
-			expect(response.body.status).toBe("Success")
-			expect(response.body.hasOwnProperty('token')).toBeTruthy()
+
+			it('response should have statuscode 200', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.status).toBe(200)
+			})
+
+			it('Response should have a auth token', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.body.hasOwnProperty('token')).toBeTruthy()
+			})
 		})
 
-		it('Logging in with invalid credentials', async () => {
-			const response = await request(app).post(route).send({
+		describe('Logging in with invalid credentials', () => {
+			const data = {
 				username: "testuser",
 				password: "wrongpassword"
+			}
+			
+			it('response should be in application/json', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.type).toBe('application/json')
 			})
-			expect(response.status).toBe(401)
-			expect(response.body.status).toBe("Error")
+
+			it('Response should have statuscode 401', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.status).toBe(401)
+			})
+
 		})
 
-		it('Logging in with malformed body', async () => {
-			const response = await request(app).post(route).send({
+		describe('Logging in with malformed body', () => {
+			const data = {
 				username: "testuser",
 				passworta: "wrongpassword"
-			})
-			expect(response.status).toBe(401)
-			expect(response.body.status).toBe("Error")
-		})
-	})
+			}
 
-	describe('GET /user/invites --> Getting Teaminvites for a user', () => {
+			it('response should be in application/json', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 401', async() => {
+				const response = await request(app).post(route).send(data)
+				expect(response.status).toBe(401)
+			})
+		})
 	})
 })

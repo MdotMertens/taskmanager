@@ -52,6 +52,8 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "ajv": "^7.1.0",
+    "ajv-formats": "^2.1.0",
     "clean-jsdoc-theme": "^3.2.7",
     "connect-livereload": "^0.6.1",
     "docdash": "^1.2.0",

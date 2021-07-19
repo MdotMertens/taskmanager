@@ -16,10 +16,19 @@ describe('ToDo Router', () => {
 	}
 
 	const userMockRepository = {
-		getIdByName: jest.fn(),
+		getIdByUsername: jest.fn(),
 	}
 
-	const app = makeApp({ todoRepository: todoMockRepository, userRepository: userMockRepository })
+	const teamMockRepository = {
+		isUserInTeam: jest.fn(),
+	}
+
+	const app = makeApp({
+		todoRepository: todoMockRepository,
+		userRepository: userMockRepository,
+		teamRepository: teamMockRepository
+	})
+
 	describe('POST /todo/add -> add ToDo', () => {
 		const route = '/todo/add'
 		describe('Adding a valid todo', () => {
@@ -32,7 +41,7 @@ describe('ToDo Router', () => {
 					assignee: "testuser"
 				}
 			]
-		
+
 
 			for (const data of bodyData) {
 				todoMockRepository.addToDo.mockReturnValue(data)
@@ -76,12 +85,12 @@ describe('ToDo Router', () => {
 					date_created: "01-01-2062",
 					assignee: "none"
 				}
-				
+
 			]
 
-			
-			for (const data of bodyData){
-				it('Response should be in application/json', async() => {
+
+			for (const data of bodyData) {
+				it('Response should be in application/json', async () => {
 					const response = await request(app).post(route).send(data)
 					expect(response.type).toBe('application/json')
 				})
@@ -98,5 +107,198 @@ describe('ToDo Router', () => {
 				})
 			}
 		})
+	})
+	describe('/todo/delete -> Delete a ToDo', () => {
+		const route = '/todo/delete'
+
+		describe('Deleting an existing ToDo personal ToDo', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: 1,
+					assignee: 1,
+					team_name: "A-Team"
+				})
+
+				todoMockRepository.deleteToDo.mockReturnValue(true)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(true)
+			})
+
+			const data = {
+				todo_id: 1,
+				assignee: 1,
+				team_name: "A-Team"
+			}
+
+
+			it('getToDo should be called with the proper aruments', async() =>{
+				await request(app).delete(route).send(data)
+				expect(todoMockRepository.getToDo).toHaveBeenCalledWith(data.todo_id)
+			})
+
+			it('deleteToDo should be called with the proper arguments', async() =>{
+				await request(app).delete(route).send(data)
+				expect(todoMockRepository.deleteToDo).toHaveBeenCalledWith(data.todo_id)
+			})
+
+			it('isUserInTeam should be called with proper arguments', async () => {
+				await request(app).delete(route).send(data)
+				expect(teamMockRepository.isUserInTeam).toHaveBeenCalledWith(1, data.team_name)
+			})
+
+			it('Response should have statuscode 204', async () => {
+				const response = await request(app).delete(route).send(data)
+				expect(response.status).toBe(204)
+			})
+		})
+
+		describe('Trying to delete a ToDo that does not exist', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: 1,
+					assignee: 1,
+					name: "A-Team"
+				})
+
+				todoMockRepository.deleteToDo.mockReturnValue(true)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(true)
+			})
+
+			it('Response should be in application/json', async () => {
+				const response = await request(app).delete(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 404', async () => {
+				const response = await request(app).delete(route).send(data)
+				expect(response.status).toBe(404)
+			})
+		})
+
+		describe('User tries to delete a ToDo that does not belong to him or his team', () => {
+			it('Response should be in application/json', async () => {
+				const response = await request(app).delete(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 403', async () => {
+				const response = await request(app).delete(route).send(data)
+				expect(response.status).toBe(403)
+			})
+		})
+
+	})
+
+	describe('PUT /todo/update -> updating a todo', () => {
+		const route = '/todo/update'
+
+		describe('Updating a ToDo that exists', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: "1234",
+					assignee: "auser",
+					name: "Something"
+				})
+
+				todoMockRepository.updateToDo.mockImplementation(data => data)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(true)
+
+				userMockRepository.getIdByUsername.mockReturnValue(1)
+			})
+
+			const data = {
+				id: "1234",
+				team_name: "Test Team",
+
+			}
+			it('Response should be in application/json', async () =>{
+				const response = await request(app).put(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 200', async () =>{
+				const response = await request(app).put(route).send(data)
+				expect(response.status).toBe(200)
+			})
+			
+			it('Response should have a data field', async () => {
+				const response = await request(app).put(route).send(data)
+				expect(response.body.data).toBeDefined()
+			})
+
+		})
+
+		describe('Updating a Team ToDo', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: "1234",
+					assignee: "auser",
+					name: "A-Team",
+					team_name: "A-Team"
+				})
+
+				userMockRepository.getIdByUsername.mockReturnValue(2)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(true)
+				
+			})
+
+
+			const data = {
+				id: "1234",
+				assignee: "someone",
+				name: "A Task",
+			}
+
+			it('Response should be in application/json', async () => {
+				const response = await request(app).put(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 200', async() => {
+				const response = await request(app).put(route).send(data)
+				expect(response.status).toBe(200)
+			})
+
+			it('Response should have a data field', async () => {
+				const response = await request(app).put(route).send(data)
+				expect(response.body.data).toBeDefined()
+			})
+		})
+
+		describe('Updating a ToDo without permissions', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: "1234",
+					assignee: "auser",
+					name: "A-Team",
+					team_name: "A-Team"
+				})
+
+				userMockRepository.getIdByUsername.mockReturnValue(2)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(false)
+				
+			})
+
+			const data = {
+				id: "1234",
+				assignee: "someone",
+				name: "A Task",
+			}
+
+			it('Response should be in application/json', async () => {
+				const response = await request(app).put(route).send(data)
+				expect(response.type).toBe('application/json')
+			})
+
+			it('Response should have statuscode 403', async() => {
+				const response = await request(app).put(route).send(data)
+				expect(response.status).toBe(403)
+			})
+		})
+
 	})
 })

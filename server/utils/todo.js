@@ -22,11 +22,29 @@ const addToDoSchema = {
 		date_due: {type: "string", format: "date"},
 		assignee: {type: "string"},
 		team_name: {type: "string"}
-	}
+	},
+	additionalProperties: false
+}
+
+const updateToDoSchema = {
+	type: "object",
+	properties: {
+		id: {type: "string"},
+		name: {type: "string"},
+		description: {type: "string"},
+		date_created: {type: "string", format: "date-time"},
+		date_finised: {type: "string", format: "date-time"},
+		date_due: {type: "string", format: "date"},
+		assignee: {type: "string"},
+		team_name: {type: "string"}
+	},
+	additionalProperties: false
 }
 
 const checkAddToDoSchema = ajv.compile(addToDoSchema)
+const checkUpdateToDoSchema = ajv.compile(updateToDoSchema)
 
 module.exports = {
-	checkAddToDoSchema
+	checkAddToDoSchema,
+	checkUpdateToDoSchema
 }

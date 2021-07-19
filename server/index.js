@@ -33,7 +33,7 @@ const makeApp =  ({userRepository = null, teamRepository = null, todoRepository 
 	//Setting up routes for the app to use
 	app.use('/user', userRouter(userRepository))
 	app.use('/team', teamRouter(teamRepository))
-	app.use('/todo', todoRouter(todoRepository, userRepository))
+	app.use('/todo', todoRouter(todoRepository, userRepository, teamRepository))
 
 	return app
 }

@@ -40,9 +40,6 @@ describe('Testing Team Router', () =>{
             it('StatusCode should be 201', () => {
                 expect(response.statusCode).toBe(201)
             })
-            it('Status in Body should be Success', () => {
-                expect(response.body.status).toBe('Success')
-            })
             it('Response should have a message in Body', () => {
                 expect(response.body.message).toBeDefined()
             })
@@ -61,12 +58,6 @@ describe('Testing Team Router', () =>{
             })
             it('Statuscode should be 400', () =>{
                 expect(response.statusCode).toBe(400)
-            })
-            it('Status in body should be Error', () => {
-                expect(response.body.status).toBe('Error')
-            })
-            it('Should have a message in body', () => {
-                expect(response.body.message).toBeDefined()
             })
         })
     })
@@ -90,9 +81,6 @@ describe('Testing Team Router', () =>{
             it('Statuscode should be 201', () => {
                 expect(response.statusCode).toBe(201)
             })
-            it('Status in body should be Success', () =>{
-                expect(response.body.status).toBe('Success')
-            })
             it('Response body should have a message', () => {
                 expect(response.body.message).toBeDefined()
             })
@@ -112,9 +100,6 @@ describe('Testing Team Router', () =>{
             })
             it('StatusCode should be 401', () => {
                expect(response.statusCode).toBe(401) 
-            })
-            it('Status in body should be Error', () => {
-               expect(response.body.status).toBe('Error') 
             })
             it('Response body should have a message', () => {
                 expect(response.body.message).toBeDefined()
@@ -139,9 +124,6 @@ describe('Testing Team Router', () =>{
             it('StatusCode should be 500', () => {
                expect(response.statusCode).toBe(500) 
             })
-            it('Status in body should be Error', () => {
-               expect(response.body.status).toBe('Error') 
-            })
             it('Response body should have a message', () => {
                 expect(response.body.message).toBeDefined()
             })
@@ -162,9 +144,6 @@ describe('Testing Team Router', () =>{
             it('StatusCode should be 200', () => {
                expect(response.statusCode).toBe(200) 
             })
-            it('status in body should be success', () => {
-               expect(response.body.status).toBe('Success') 
-            })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 
             })
@@ -181,9 +160,6 @@ describe('Testing Team Router', () =>{
             })
             it('StatusCode should be 200', () => {
                expect(response.statusCode).toBe(200) 
-            })
-            it('Status should be success', () => {
-                expect(response.body.status).toBe('Success')
             })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 
@@ -203,9 +179,6 @@ describe('Testing Team Router', () =>{
             it('StatusCode should be 200', () => {
                expect(response.statusCode).toBe(400) 
             })
-            it('Status should be success', () => {
-                expect(response.body.status).toBe('Error')
-            })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 
             }) 
@@ -222,9 +195,6 @@ describe('Testing Team Router', () =>{
             })
             it('StatusCode should be 200', () => {
                expect(response.statusCode).toBe(400) 
-            })
-            it('Status should be success', () => {
-                expect(response.body.status).toBe('Error')
             })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 
@@ -243,9 +213,6 @@ describe('Testing Team Router', () =>{
             })
             it('StatusCode should be 200', () => {
                expect(response.statusCode).toBe(400) 
-            })
-            it('Status should be success', () => {
-                expect(response.body.status).toBe('Error')
             })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 

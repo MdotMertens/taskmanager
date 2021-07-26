@@ -11,6 +11,8 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
 			let assigneeId //Id of User who is assigned the task
 			let isInTeam // Whether the user belongs to the team to which the ToDo gets added
 
+			// Create the task if the assignee is also the creator or if the
+			// creator is in the team that the Task is created for
 			if (req.assignee) {
 				assigneeId = await userRepository.getIdByUsername(req.assignee)
 			} else {
@@ -32,6 +34,8 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
 		if (todo) {
 			const isOwnToDo = req.id === todo.assignee
 			const isInTeam = await teamRepository.isUserInTeam(req.id, todo.team_name)
+			// Check whethcer the Task belongs to the user itself or if the task
+			// belongs to the team.
 			if (isOwnToDo || isInTeam) {
 				await todoRepository.deleteToDo(todo.id)
 				res.status(204).json()
@@ -50,13 +54,17 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
 				const assigneeId = await userRepository.getIdByUsername(todo.assignee)
 				const isOwnToDo = req.id === assigneeId
 				const isInTeam = await teamRepository.isUserInTeam(req.id, todo.team_name)
+
+				//Todo can only be edited if the user is the assignee or is in the team
 				if (isOwnToDo || isInTeam) {
+					// Using spread operator to update the todo
 					const updatedTodo = { ...todo, ...req.body }
 					await todoRepository.updateToDo()
 					res.status(200).json({ data: updatedTodo })
-				}else{
+				} else {
 					res.status(403).send()
 				}
+
 			} else {
 				res.status(404).send()
 			}

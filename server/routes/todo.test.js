@@ -45,6 +45,7 @@ describe('ToDo Router', () => {
 
 			for (const data of bodyData) {
 				todoMockRepository.addToDo.mockReturnValue(data)
+				userMockRepository.getIdByUsername.mockReturnValue(1)
 				it('Response should be in application/json', async () => {
 					const response = await request(app).post(route).send(data)
 					expect(response.type).toBe('application/json')

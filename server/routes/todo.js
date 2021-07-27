@@ -13,15 +13,18 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
 
 			// Create the task if the assignee is also the creator or if the
 			// creator is in the team that the Task is created for
-			if (req.assignee) {
-				assigneeId = await userRepository.getIdByUsername(req.assignee)
+			if (req.body.assignee) {
+				assigneeId = await userRepository.getIdByUsername(req.body.assignee)
 			} else {
-				isInTeam = await teamRepository.isUserInTeam(req.id, todo.team_name)
+				isInTeam = await teamRepository.isUserInTeam(req.id, req.body.team_name)
 			}
+
 
 			if (req.id == assigneeId || isInTeam) {
 				const todo = await todoRepository.addToDo(req.body)
 				res.status(201).json({ data: todo })
+			} else {
+				res.status(400).send()
 			}
 		} else {
 			res.status(400).json({ error: checkToDo.checkAddToDoSchema.errors })

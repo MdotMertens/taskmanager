@@ -43,7 +43,7 @@ describe('Testing User Router', () =>{
 
 				it('Response should have a auth token', async() => {
 					const response = await request(app).post(route).send(data)
-					expect(response.body.hasOwnProperty('token')).toBeTruthy()
+					expect(response.body.token).toBeDefined()
 				})
 			}
 
@@ -62,7 +62,7 @@ describe('Testing User Router', () =>{
 			})
 			it('Response should not have a auth token', async() => {
 				const response = await request(app).post(route).send(data)
-				expect(response.body.hasOwnProperty('token')).toBeFalsy()
+				expect(response.body.token).toBeUndefined()
 			})
 		})
 		
@@ -108,7 +108,7 @@ describe('Testing User Router', () =>{
 
 			it('Response should have a auth token', async() => {
 				const response = await request(app).post(route).send(data)
-				expect(response.body.hasOwnProperty('token')).toBeTruthy()
+				expect(response.body.token).toBeDefined()
 			})
 		})
 

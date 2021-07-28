@@ -1,0 +1,19 @@
+#!/bin/sh
+test_exit_code=1
+
+all_js_files=$(git diff --cached --diff-filter=d --name-only | grep .js$)
+
+./node-modules/.bin/jest jest
+
+test_exit_code=$?
+
+if [ $test_exit_code -ne 0 ]
+
+then
+	echo "❌Tests failed, not pushing"
+	exit 1
+else
+	echo "✔ Everything is fine, godspeed"
+	exit 0
+fi
+

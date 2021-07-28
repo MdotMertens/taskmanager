@@ -1,0 +1,30 @@
+#!/bin/sh
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+linter_exit_code=1
+all_js_files=$(git diff --cached --diff-filter=d --name-only | grep .js$)
+./node_modules/.bin/eslint $all_js_files --quiet --fix 
+linter_exit_code=$?
+git add -f $all_js_files 
+if [ $linter_exit_code -ne 0 ]
+then
+	echo -e "$(RED) ❌ Linter errors have occurred"
+  exit 1
+else
+  echo -e "${GREEN} ✔ Eslint and Stylelint did not find any errors."
+  exit 0
+fi
+
+jest_errors = `./node_modules/.bin/jest --findRelatedTests $all_js_files`
+
+test_exit_code=$?
+
+if [$test_exit_code -ne 0]
+	then
+		echo -e "${RED} Tests failed "
+		exit 1
+
+	else
+		echo -e "${Green} Tests passed"
+		exit 0
+fi

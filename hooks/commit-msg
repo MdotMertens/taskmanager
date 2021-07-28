@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+
+if ! head -1 "$1" | grep -qE "^(feat|fix|ci|chore|docs|test|style|refactor|build)(\(.+?\))?: .{1,}$"; then
+	echo -e "${RED}Aborting commit. Your commit message is invalid."
+    exit 1
+fi
+
+if ! head -1 "$1" | grep -qE "^.{1,50}$"; then
+    echo "${GREEN}Aborting commit. Your commit message is too long."
+    exit 1
+fi

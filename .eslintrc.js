@@ -3,6 +3,7 @@ module.exports = {
         "browser": true,
         "commonjs": true,
         "es2021": true,
+		"jest": true,
         "node": true
     },
     "extends": [
@@ -25,6 +26,7 @@ module.exports = {
         }
     },
     "rules": {
-        "max-lines-per-function": ["error", 20]
+        "max-statements": ["error", 20],
+		"max-nested-callbacks": ["error", 4]
     }
 };

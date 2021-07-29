@@ -27,6 +27,5 @@ module.exports = {
     },
     "rules": {
         "max-statements": ["error", 20],
-		"max-nested-callbacks": ["error", 4]
     }
 };

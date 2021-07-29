@@ -43,7 +43,7 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
 				await todoRepository.deleteToDo(todo.id)
 				res.status(204).json()
 			} else {
-				res.status(401).json()
+				res.status(403).json()
 			}
 		} else {
 			res.status(404).json()

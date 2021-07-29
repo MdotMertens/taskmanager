@@ -103,7 +103,6 @@ describe('ToDo Router', () => {
 
 				it('Response should have a error message', async () => {
 					const response = await request(app).post(route).send(data)
-					console.log(response.body.error)
 					expect(response.body.error).toBeDefined()
 				})
 			}
@@ -155,16 +154,18 @@ describe('ToDo Router', () => {
 
 		describe('Trying to delete a ToDo that does not exist', () => {
 			beforeEach(() => {
-				todoMockRepository.getToDo.mockReturnValue({
-					id: 1,
-					assignee: 1,
-					name: "A-Team"
-				})
+				todoMockRepository.getToDo.mockReturnValue(null)
 
 				todoMockRepository.deleteToDo.mockReturnValue(true)
 
 				teamMockRepository.isUserInTeam.mockReturnValue(true)
 			})
+
+			const data = {
+				todo_id: 1,
+				assignee: 1,
+				team_name: "A-Team"
+			}
 
 			it('Response should be in application/json', async () => {
 				const response = await request(app).delete(route).send(data)
@@ -178,6 +179,23 @@ describe('ToDo Router', () => {
 		})
 
 		describe('User tries to delete a ToDo that does not belong to him or his team', () => {
+			beforeEach(() => {
+				todoMockRepository.getToDo.mockReturnValue({
+					id: 1,
+					assignee: 2,
+					team_name: "A-Team"
+				})
+
+				todoMockRepository.deleteToDo.mockReturnValue(true)
+
+				teamMockRepository.isUserInTeam.mockReturnValue(false)
+			})
+
+			const data = {
+				todo_id: 1,
+				assignee: 1,
+				team_name: "A-Team"
+			}
 			it('Response should be in application/json', async () => {
 				const response = await request(app).delete(route).send(data)
 				expect(response.type).toBe('application/json')
@@ -289,11 +307,6 @@ describe('ToDo Router', () => {
 				assignee: "someone",
 				name: "A Task",
 			}
-
-			it('Response should be in application/json', async () => {
-				const response = await request(app).put(route).send(data)
-				expect(response.type).toBe('application/json')
-			})
 
 			it('Response should have statuscode 403', async() => {
 				const response = await request(app).put(route).send(data)

@@ -1,9 +1,8 @@
 #!/bin/sh
 test_exit_code=1
 
-all_js_files=$(git diff --cached --diff-filter=d --name-only | grep .js$)
 
-./node-modules/.bin/jest jest
+npm test
 
 test_exit_code=$?
 

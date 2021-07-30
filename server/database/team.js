@@ -11,7 +11,7 @@ const db = require('./index')
 async function createTeam(teamName, teamManager){
     try {
         await db.query({
-            text: `INSERT INTO \"TeamDetails\"(teamname, teammanager) VALUES($1, $2)`,
+            text: `INSERT INTO \"team_details\"(teamname, teammanager) VALUES($1, $2)`,
             values: [teamName, teamManager]
         })
     } catch(e){
@@ -36,7 +36,7 @@ async function isUserTeamManager(userid, teamname){
     let result
     try {
          result = await db.query({
-                    text: `SELECT id, teammanager FROM \"TeamDetails\" 
+                    text: `SELECT id, teammanager FROM \"team_details\" 
                            WHERE teamname=$1 AND teammanager=$2`,
                     values: [teamname,userid]
                 })
@@ -74,9 +74,8 @@ async function createTeamInvite(inviterId, username, teamname){
 }
 
 async function removeUserFromTeam(username, teamname) {
-    let result
     try{
-        result = db.query({
+        db.query({
             text: `DELETE FROM \"Teams\"
              WHERE teamid=(SELECT id FROM \"TeamDetails\" WHERE teamname=$1)
              AND userid=(SELECT id FROM \"USER\" WHERE username=$2)`,
@@ -147,7 +146,6 @@ async function deleteTeamInvite(inviteId){
 }
 module.exports = {
     createTeam,
-    getUserNameById,
     isUserTeamManager,
     createTeamInvite,
     removeUserFromTeam,

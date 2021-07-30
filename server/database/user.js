@@ -69,9 +69,6 @@ async function getIdByUsername(userId){
 
 
 module.exports = {
-    acceptTeamInvite,
-    deleteTeamInvite,
-    getInvites,
     loginUser,
     registerUser,
     getUserNameById,

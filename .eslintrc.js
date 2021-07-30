@@ -27,5 +27,6 @@ module.exports = {
     },
     "rules": {
         "max-statements": ["error", 20],
+		"no-useless-escape": 0
     }
 };

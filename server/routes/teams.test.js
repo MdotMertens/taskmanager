@@ -1,6 +1,5 @@
 const { makeApp } = require('../index.js')
 const request = require('supertest')
-const authRequest = require('../utils/middleware')
 jest.mock('../utils/middleware',  () => jest.fn((req, res, next) => {
     req.id = 1
     next()
@@ -39,9 +38,6 @@ describe('Testing Team Router', () =>{
             })
             it('StatusCode should be 201', () => {
                 expect(response.statusCode).toBe(201)
-            })
-            it('Response should have a message in Body', () => {
-                expect(response.body.message).toBeDefined()
             })
         })
         describe('Creating a team with malformed body', () =>{

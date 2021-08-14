@@ -35,7 +35,9 @@ describe('Testing User Router', () =>{
 					expect(response.type).toBe('application/json')
 				})
 				it('Response should have statuscode 201', async() => {
-					mockUserRepository.registerUser.mockResolvedValue({id: 1})
+					mockUserRepository.registerUser.mockResolvedValue({
+            id: 1,
+          })
 					const response = await request(app).post(route).send(data)
 					expect(response.statusCode).toBe(201)
 
@@ -87,15 +89,18 @@ describe('Testing User Router', () =>{
 		describe('Logging in with valid credentials', () => {
 			//Assuming that the credentials are valid
 
-			beforeEach(() => {
-				mockUserRepository.loginUser.mockReturnValueOnce({id: 1})
-			})
 
 			const data = {
 				username: "testuser",
 				password: "1234"
 			}
 
+			beforeEach(() => {
+				mockUserRepository.loginUser.mockReturnValueOnce({
+          id: 1,
+          password: data.password
+        })
+			})
 			it('response should be in application/json', async() => {
 				const response = await request(app).post(route).send(data)
 				expect(response.type).toBe('application/json')
@@ -133,7 +138,7 @@ describe('Testing User Router', () =>{
 		describe('Logging in with malformed body', () => {
 			const data = {
 				username: "testuser",
-				passworta: "wrongpassword"
+				passwort: "wrongpassword"
 			}
 
 			it('response should be in application/json', async() => {

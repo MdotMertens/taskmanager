@@ -18,7 +18,7 @@ const addToDoSchema = {
 		name: {type: "string"},
 		description: {type: "string"},
 		date_created: {type: "string", format: "date-time"},
-		date_finised: {type: "string", format: "date-time"},
+		date_finished: {type: "string", format: "date-time"},
 		date_due: {type: "string", format: "date"},
 		assignee: {type: "string"},
 		team_name: {type: "string"}
@@ -33,7 +33,7 @@ const updateToDoSchema = {
 		name: {type: "string"},
 		description: {type: "string"},
 		date_created: {type: "string", format: "date-time"},
-		date_finised: {type: "string", format: "date-time"},
+		date_finished: {type: "string", format: "date-time"},
 		date_due: {type: "string", format: "date"},
 		assignee: {type: "string"},
 		team_name: {type: "string"}

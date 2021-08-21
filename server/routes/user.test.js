@@ -98,7 +98,7 @@ describe('Testing User Router', () =>{
 			beforeEach(() => {
 				mockUserRepository.loginUser.mockReturnValueOnce({
           id: 1,
-          password: data.password
+          password: "$2a$10$Ymw8Av.4lEQ.VyJjbpNH/euLcWKWn2y3EYogQZXDdtrDURRCicE2S"
         })
 			})
 			it('response should be in application/json', async() => {
@@ -123,6 +123,12 @@ describe('Testing User Router', () =>{
 				password: "wrongpassword"
 			}
 			
+			beforeEach(() => {
+				mockUserRepository.loginUser.mockReturnValueOnce({
+          id: 1,
+          password: "$2a$10$Ymw8Av.4lEQ.VyJjbpNH/euLcWKWn2y3EYogQZXDdtrDURRCicE2S"
+        })
+			})
 			it('response should be in application/json', async() => {
 				const response = await request(app).post(route).send(data)
 				expect(response.type).toBe('application/json')

@@ -55,6 +55,7 @@
   "dependencies": {
     "ajv": "^7.1.0",
     "ajv-formats": "^2.1.0",
+    "bcrypt": "^5.0.1",
     "clean-jsdoc-theme": "^3.2.7",
     "connect-livereload": "^0.6.1",
     "docdash": "^1.2.0",

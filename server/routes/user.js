@@ -2,12 +2,30 @@ const Router = require('express-promise-router')
 const router = new Router()
 
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const checkUser = require('../utils/user')
 const authRequest = require('../utils/middleware')
 
 const env_file = (process.env.NODE_ENV !== "test") ? "/.env/dev" : "/.env/prod"
 require('dotenv').config({ path: process.cwd() + env_file })
+
+const hashPassword = async (password) => {
+  try {
+    const salt = await bcrypt.genSalt(10)
+    return await bcrypt.hash(password, salt)
+  } catch (error) {
+    throw new Error("Could not hash password.")
+  }
+}
+
+const checkPassword = async (password, hash) => {
+  try {
+    return bcrypt.compare(password, hash)
+  }catch {
+    throw new Error("Could not check password.")
+  }
+}
 
 module.exports = (userRepository, teamRepository) => {
   // Route used to register a new user 
@@ -16,6 +34,7 @@ module.exports = (userRepository, teamRepository) => {
       res.status(400).json(checkUser.checkRegisterJSON.errors)
     }
 
+    req.body.password = await hashPassword(req.body.password)
     const result = await userRepository.registerUser(req.body) //
     if (!result) {
       res.status(500).json({ message: "Couldn't add user to database" })
@@ -31,7 +50,7 @@ module.exports = (userRepository, teamRepository) => {
     }
 
     const login = await userRepository.loginUser(req.body)
-    if (login?.password !== req.body.password) {
+    if (!await checkPassword(req.body.password, login.password || !login)) {
       res.status(401).json({ message: "Username or password is wrong" })
 
     }

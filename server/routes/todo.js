@@ -25,8 +25,12 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
     if (!req.id == assigneeId && !isInTeam) {
       res.status(400).send()
     }
-
-    res.status(201).json({ data: await todoRepository.addToDo(req.body) })
+    const todo = await todoRepository.addToDo(req.body)
+    if (!todo) {
+      res.status(500).json()
+      
+    }
+    res.status(201).json({ data: todo })
   })
 
   router.delete('/delete', authRequest, async (req, res) => {
@@ -54,7 +58,7 @@ module.exports = (todoRepository, userRepository, teamRepository) => {
       res.status(400).json({ error: checkToDo.checkUpdateToDoSchema.errors })
     }
 
-    const todo = await todoRepository.getToDo(req.body.todo_id)
+    const todo = await todoRepository.getToDo(req.body.id)
 
     if (!todo) {
       res.status(404).send()

@@ -146,9 +146,9 @@ describe('Testing User Router', () =>{
 				expect(response.type).toBe('application/json')
 			})
 
-			it('Response should have statuscode 401', async() => {
+			it('Response should have statuscode 400', async() => {
 				const response = await request(app).post(route).send(data)
-				expect(response.status).toBe(401)
+				expect(response.status).toBe(400)
 			})
 		})
 	})

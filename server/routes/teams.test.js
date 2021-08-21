@@ -172,8 +172,8 @@ describe('Testing Team Router', () =>{
             it('Response should be in application/json', () => {
                expect(response.type).toBe('application/json') 
             })
-            it('StatusCode should be 200', () => {
-               expect(response.statusCode).toBe(400) 
+            it('StatusCode should be 404', () => {
+               expect(response.statusCode).toBe(404) 
             })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 
@@ -189,8 +189,8 @@ describe('Testing Team Router', () =>{
             it('Response should be in application/json', () => {
                expect(response.type).toBe('application/json') 
             })
-            it('StatusCode should be 200', () => {
-               expect(response.statusCode).toBe(400) 
+            it('StatusCode should be 404', () => {
+               expect(response.statusCode).toBe(404) 
             })
             it('Response should have a message', () => {
                expect(response.body.message).toBeDefined() 

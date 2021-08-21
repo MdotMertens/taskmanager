@@ -1,0 +1,685 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "TaskManager API",
+    "description": "This page describes the API used for Taskmanager ",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://thisisgoingtogetfilled:6060"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "JWT token is invalid or missing"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/team/create": {
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Add a new team",
+        "description": "Creates a team with the name teamName",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Data for the Team to be created",
+            "required": "true",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns a status and a message.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Created team"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Returns an error",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/team/inviteuser": {
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Invites a user to a team",
+        "description": "Creates an invite for the user supplied with username to add them to add them to the team supplied with teamname. <br> Invites can only be created by the teamleader and last a week.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "teamname": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "teamname",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Succesfully invited user to the team.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Created invite for ${username}"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not allowed to invite new members",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "You need to be the team lead to invite members"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server was not able to create invite",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Could not invite ${username}"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/team/{inviteid}/{acceptance}": {
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Act upon an invite",
+        "description": "Acts upon an invite with ksuid. Acceptance can either be accept or decline. <br> Once an invite is accepted, the invited user belongs to the team.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "teamname": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "teamname",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully accepted or declined invite",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Accepted/Declined invite"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid option for acceptance",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Accept or Decline invite."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invite does not exist",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Invalid invite"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/team/removeuser": {
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Removes a user from a team",
+        "description": "Removes a user from the team. You need to be either the teammanager or the user that is going to be removed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "teamname": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "teamname",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully removed a user",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Removed ${username} from {teamname}"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Creates a new user",
+        "description": "Creates a new user with the provided data",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Data for the User to be registered",
+            "required": "true",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns a JSON Object with a message and the jwt Token used to authorize further requests for the user",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Registered Succsefully",
+                  "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlIjoiUGVwc2kgaXMgYmV0dGVyIHRoYW4gQ29jYS1Db2xhIiwiaWF0IjoxNTE2MjM5MDIyfQ.fSVVXeplgroL8ojfOGslH1UOiM_y_wZTKeORiWb8I18"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Cannot register user.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login as user",
+        "description": "Login as the user with the given credentials",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": "true",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "descripiton": "Login success.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "format": "JWT"
+                  }
+                },
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                }
+              }
+            }
+          },
+          "401": {
+            "descripiton": "Login failed. Either password or username is wrong.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Username or password is wrong"
+                }
+              }
+            }
+          },
+          "400": {
+            "descripiton": "Malformed request body.",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/invites": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List invites for user",
+        "description": "Returns a list of invites that the user is invited to. <br> The invite holds the ksuid for the invite, the inviters name and the teamname that the user is invited to.",
+        "security": {
+          "bearerAuth": []
+        },
+        "responses": {
+          "200": {
+            "description": "A list of invites for the user",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "inviteid": {
+                    "type": "ksuid"
+                  },
+                  "inviter": {
+                    "type": "string"
+                  },
+                  "teamname": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "invites": [
+                    {
+                      "id": "1t5QCUCG9dyqo2dzibdkFzS9xch",
+                      "inviter": "SomeUser",
+                      "teamname": "SomeTeam"
+                    },
+                    {
+                      "id": "1t5QYSHE3RLrMjoF5ip3Oy7SFqh",
+                      "inviter": "SomeOtherUser",
+                      "teamname": "SomeOtherTeam"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No invites are available for the user"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/todo/add": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "Adds a ToDo",
+        "description": "Adds a ToDo for a user or a team",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "ToDo that needs to be added",
+            "required": "true",
+            "schema": {
+              "$ref": "#/definitions/ToDo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Added ToDo Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ToDo"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/todo/update/": {
+      "put": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "Updates a todo",
+        "description": "Updates a ToDo with the given id.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Changes for the ToDo. Only need fields that need to be updated",
+            "required": "true",
+            "schema": {
+              "$ref": "#/definitions/ToDo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "descripiton": "Updated ToDo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ToDo"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/todo/delete": {
+      "delete": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "Deletes a ToDo",
+        "description": "Deletes a ToDo with the given id",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": "true",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The UUID of the ToDo to be deleted"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted ToDo."
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ToDo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "ksuid",
+          "description": "The id of the ToDo"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the ToDo"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the ToDo"
+        },
+        "date_created": {
+          "type": "string",
+          "format": "date",
+          "description": "Date on which the ToDo was created"
+        },
+        "date_due": {
+          "type": "string",
+          "format": "date",
+          "description": "Date on which the ToDo is due"
+        },
+        "date_finished": {
+          "type": "string",
+          "format": "date",
+          "description": "Date on which the ToDo was finished"
+        },
+        "assignee": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The User to which the ToDo is assigned to"
+        },
+        "team": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The Team to which the ToDo is assigned to"
+        },
+        "done": {
+          "type": "boolean",
+          "description": "Indicates whether the ToDo is done"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "ksuid",
+          "description": "The id of the User"
+        },
+        "username": {
+          "type": "string",
+          "description": "Name of the User"
+        },
+        "password": {
+          "type": "string",
+          "format": "bcrypt",
+          "description": "Password for the user. Hashed with bcrypt."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "E-mail for the given user"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First name of the uesr."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name of the uesr."
+        }
+      }
+    },
+    "Team": {
+      "type": "object",
+      "properties": {
+        "team_name": {
+          "type": "string",
+          "description": "Name of the team"
+        },
+        "team_manager": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the user who is the manager"
+        }
+      }
+    }
+  },
+  "tags": []
+}
